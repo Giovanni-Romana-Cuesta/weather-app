@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { convertUnixDate } from './utils/utils';
-
+import WeatherInfo from './components/WeatherInfo';
 function App() {
-  const API_KEY = process.env.REACT_APP_API_KEY;
-  const url = `http://api.openweathermap.org/data/2.5/weather?q=london&units=metric&appid=${API_KEY}`;
-
   const [data, setData] = useState({});
+  const [query, setQuery] = useState('london');
+  const API_KEY = process.env.REACT_APP_API_KEY;
+  const url = `http://api.openweathermap.org/data/2.5/weather?q=${query}&units=metric&appid=${API_KEY}`;
 
   const fetchData = () => {
     fetch(url)
@@ -22,9 +21,25 @@ function App() {
 
   return (
     <div className="container">
-      <div className="weather-container">
+      <main className="weather-container">
         <input type="text" className="search-box" placeholder="Search" />
-      </div>
+        <div>
+          {typeof data.main != 'undefined' ? (
+            <WeatherInfo
+              city={data.name}
+              date={data.dt}
+              country={data.sys.country}
+              icon={data.weather[0].icon}
+              description={data.weather[0].description}
+              temp={data.main.temp}
+              minTemp={data.main.temp_min}
+              maxTemp={data.main.temp_max}
+            />
+          ) : (
+            ''
+          )}
+        </div>
+      </main>
     </div>
   );
 }
